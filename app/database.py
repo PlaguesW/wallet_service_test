@@ -12,11 +12,11 @@ engine = create_engine(
     pool_pre_ping=True,
     pool_size=20,
     max_overflow=0,
-    pool_pre_ping=True,
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
 
 def get_db():
     """Dependency to get a database session."""
@@ -29,7 +29,8 @@ def get_db():
         raise
     finally:
         db.close()
-        
+
+
 @contextmanager
 def get_db_context():
     """Context manager to handle database sessions."""
@@ -42,9 +43,10 @@ def get_db_context():
         raise
     finally:
         db.close()
-        
+
+
 def get_locked_wallet(db: Session, wallet_uuid: str):
     from .models import Wallet
     return db.query(Wallet).filter(
         Wallet.uuid == wallet_uuid
-        ).with_for_update().first()
+    ).with_for_update().first()
